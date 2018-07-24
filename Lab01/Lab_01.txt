@@ -1,0 +1,84 @@
+[OPTIONAL] Before we start:
+
+- Update the mini labs folder:
+  - type "git pull" in the MiniLabs folder
+  - You might have to disconnect from the lab network to do this
+- Update the Tools folder
+  - cd Tools
+  - ./update_submodule.sh
+
+
+Part 1 - Connect to tn3270 Server:
+
+From terminal:
+   For 'plaintext' type: x3270 <ip/hostname> 
+   For SSL: x3270 L:<ip/hostname>:992 
+From Gui:
+- Launch x3270
+- Click connect
+- Type L:<ip/hostname>:<port> or <ip/hostname>
+
+Part 2 - Logging on
+
+- Type LOGON APPLID(TSO) or TSO
+  - Advanced: LOGON APPLID(TSO) DATA(<userid>) or TSO <userid>
+- Type assigned userid
+- Type password (your assigned userid is your password in UPPERCASE)
+
+Part 3 - Copy & Paste:
+
+- Type ‘ISPF’
+- Type ‘3' hit enter
+- Type '4' hit enter (in the future a shortcut for this is =3.4)
+- In 'Dsname Level' type 'EVIL.**' hit enter
+- Move cursor to command column in front of EVIL.LABS
+- Type ‘I’ hit enter
+- Hit F3
+- Type =3.2 in command line and hit enter
+- In option line type A hit tab until cursor is at line "Name:"
+- Type (with single quotes) '<userid>.LABS' hit enter
+- hit enter again on 'Allocate Dataset' screen. 
+- You should see 'Dataset Allocated' on the top right
+- in option line type '=3.4'
+- In 'Dsname Level' type 'EVIL.**' hit enter
+- Move cursor to command column in front of EVIL.LABS
+- Type 'V' (for 'view') hit enter
+- next to JCL type 'V' hit enter
+- In the command line type 'cut' hit enter
+- In the command line type '=3.4' hit enter
+- In 'Dsname Level' type '<userid>.**' hit enter
+- Tab to <userid>.LABS in the command column put 'e'
+- In the command line type 's LAB01' and hit enter
+- In the commad line type 'paste' and place cursor on first/top red asterix type 'A' (for after) hit enter
+- Go to command line, type ‘save’ and hit enter
+- hit F3 twice
+
+Part 4 - Editing
+
+- In command column next to '<userid>.LABS' type 'E' and hit enter
+- Next to 'LAB01' type 'e' and hit enter
+- Replace all instances of '<user>' to your assigned userid (including <>). Note: UPPERCASE ONLY! 
+- NOTE: The 'JOB' is placement specific, must be 10 chars from //. I.E. if your userid was EVIL3 you had to delete a '>' which moved the 'JOB' decleration and your job with fail, if thats the case, replace '>' with '0' so it would be //EVIL3001
+- in the command line type 'save' and hit enter
+- in the command line type 'submit' and hit enter
+
+Part 5 - Getting the job output:
+
+- Navigate to SDSF (either go to main ISPF menu by hitting F3 four times or by typing '=sd' in the command line and hitting enter
+- on command line type 'OWNER <userid>'
+- Type ‘ST’ and hit enter
+- Beside the job you submitted (in column 'NP') type ‘?’ and hit enter
+- Beside SYSTSPRT type ‘s’ and hit enter
+
+BONUS BONUS BONUS
+
+Get 'PATH' datasets:
+
+- Anywhere in ISPF/SDSF: in command bar type ‘TSO ISRDDN’
+OR
+- Go to command enter screen (=6) and type ISRDDN
+
+- Hit F8 until you find SYSEXEC or in the command line type ‘F SYSEXEC’ and hit enter
+
+- This does the same thing: =6;ISRDDN;F SYSEXEC
+- So does: DDLIST;F SYSEXEC 

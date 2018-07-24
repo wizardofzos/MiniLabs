@@ -1,0 +1,21 @@
+Part 1 - Access Dataset in WARN mode
+- From TSO red ready prompt type: SEARCH ALL WARNING NOMASK
+- In ISPF type '=6' in command line. On '===>' line type: SEARCH ALL WARNING NOMASK
+- Using ISPF, View (with 'V') the file you have warn mode access to
+- First person to get the movie reference gets a sticker
+
+Part 2 - Surrogat Access - Make new JCL File
+- Edit JCL file from Lab 01
+- In command line enter 'cut' and hit enter
+- Hit F3
+- in command line type 's LAB02' hit enter
+- in command line type 'paste'
+- put letter 'A' (for after) on the first line with three red asterix and hit enter
+- in command line type 'save'
+
+Part 3 - Edit JCL
+- In job card add ',USER=EVIL55' after 'MSGLEVEL=(1,1)'
+- Change 'notify=&sysuid' to your userid: notify=<userid>
+- Replace TSO rexx commands 'EXEC .... !' with: SEND 'WOULD YOU LIKE TO PLAY A GAME. FROM:' USER(<userid>) NOW
+- Replace <userid> with your userid or else you'll get a return code: MAXCC=0092 which means the job failed
+- Submit the JCL by typing 'sub' on command line

